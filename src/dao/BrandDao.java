@@ -5,6 +5,7 @@ import entity.Brand;
 import entity.User;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,6 +31,19 @@ public class BrandDao {
             e.printStackTrace();
         }
         return brandList;
+    }
+
+    public boolean save(Brand brand) {
+        String query = "INSERT INTO public.brand (brand_name) VALUES (?)";
+        try {
+
+            PreparedStatement prepared = this.connection.prepareStatement(query);
+            prepared.setString(1,brand.getName());
+            return prepared.executeUpdate() != -1;
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
 
