@@ -31,12 +31,14 @@ public class Layout extends JFrame {
         if (rows == null) {
             rows = new ArrayList<>();
         }
-
-        for (Object[] row : rows ) {
+        for (Object[] row : rows) {
             model.addRow(row);
         }
+    }
 
 
+    public int getTableSelectedRow(JTable table, int index) {
+        return Integer.parseInt(table.getValueAt(table.getSelectedRow(), index).toString());
     }
 
 }

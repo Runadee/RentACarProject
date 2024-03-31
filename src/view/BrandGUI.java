@@ -27,7 +27,6 @@ public class BrandGUI extends Layout {
 
 
         if (brand != null) {
-
             field_brand_name.setText(brand.getName());
         }
         button_brand_save.addActionListener(e -> {

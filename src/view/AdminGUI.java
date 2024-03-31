@@ -1,6 +1,7 @@
 package view;
 
 import business.BrandManager;
+import core.Helper;
 import entity.Brand;
 import entity.User;
 
@@ -30,27 +31,33 @@ public class AdminGUI extends Layout {
         this.brandManager = new BrandManager();
         this.add(container);
         this.user = user;
-        this.guiInitialize(1000,500);
+        this.guiInitialize(1000, 500);
 
         if (this.user == null) {
-           dispose();
+            dispose();
         }
-
         this.label_welcome.setText(" Welcome " + this.user.getUsername());
+        loadBrandTable();
+        loadBrandComponent();
+        this.table_brand.setComponentPopupMenu(this.brandMenu);
+    }
 
-       loadBrandTable();
+    public void loadBrandTable() {
+        Object[] column_brand = {"Brand ID", "Brand Name"};
+        ArrayList<Object[]> brandList = this.brandManager.getForTable(column_brand.length);
+        this.createTable(this.tableModel_brand, this.table_brand, column_brand, brandList);
+    }
 
+    public void loadBrandComponent() {
         this.table_brand.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 int selected_row = table_brand.rowAtPoint(e.getPoint());
-                table_brand.setRowSelectionInterval(selected_row,selected_row);
+                table_brand.setRowSelectionInterval(selected_row, selected_row);
             }
         });
-
         // Pop-Up Menu New, Update, Delete Actions
         this.brandMenu = new JPopupMenu();
-
         this.brandMenu.add("New").addActionListener(e -> {
             BrandGUI brandGUI = new BrandGUI(null);
             brandGUI.addWindowListener(new WindowAdapter() {
@@ -60,8 +67,9 @@ public class AdminGUI extends Layout {
                 }
             });
         });
+
         this.brandMenu.add("Update").addActionListener(e -> {
-            int selectBrandId = Integer.parseInt(table_brand.getValueAt(table_brand.getSelectedRow(), 0).toString());
+            int selectBrandId = this.getTableSelectedRow(table_brand,0);
             BrandGUI brandGUI = new BrandGUI(this.brandManager.getById(selectBrandId));
             brandGUI.addWindowListener(new WindowAdapter() {
                 @Override
@@ -71,32 +79,16 @@ public class AdminGUI extends Layout {
             });
         });
         this.brandMenu.add("Delete").addActionListener(e -> {
-
+            if (Helper.confirm("sure")) {
+                int selectBrandId = this.getTableSelectedRow(table_brand,0);
+                if (this.brandManager.delete(selectBrandId)) {
+                    Helper.showMessage("Succeed !");
+                    loadBrandTable();
+                } else {
+                    Helper.showMessage("Error !");
+                }
+            }
         });
-
-        this.table_brand.setComponentPopupMenu(this.brandMenu);
-    }
-
-    public void loadBrandTable() {
-        Object[] column_brand = {"Brand ID" , "Brand Name"};
-
-        ArrayList<Brand> brandList = this.brandManager.findAll();
-        this.tableModel_brand.setColumnIdentifiers(column_brand);
-
-
-
-        this.table_brand.setModel(this.tableModel_brand);
-
-        this.table_brand.getTableHeader().setReorderingAllowed(false);
-        this.table_brand.setEnabled(false);
-
-        DefaultTableModel clearModel = (DefaultTableModel) this.table_brand.getModel();
-        clearModel.setRowCount(0);
-        for (Brand brand : brandList) {
-            Object[] objects = {brand.getId(), brand.getName()};
-            this.tableModel_brand.addRow(objects);
-        }
-
     }
 
 }

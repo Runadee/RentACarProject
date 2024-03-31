@@ -50,7 +50,6 @@ public class BrandDao {
         String query = "UPDATE public.brand SET brand_name = ? WHERE brand_id = ?";
 
         try {
-
             PreparedStatement prepared = this.connection.prepareStatement(query);
             prepared.setString(1,brand.getName());
             prepared.setInt(2,brand.getId());
@@ -61,9 +60,21 @@ public class BrandDao {
         return true;
     }
 
+    public boolean delete(int id) {
+        String query = "DELETE FROM public.brand WHERE brand_id = ?";
+        try {
+            PreparedStatement prepared = this.connection.prepareStatement(query);
+            prepared.setInt(1,id);
+            return prepared.executeUpdate() != -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public Brand getById(int id) {
         Brand object = null;
-        String query = "SELECT * FROM public.brand WHERE brand_id";
+        String query = "SELECT * FROM public.brand WHERE brand_id = ? ";
         try {
             PreparedStatement prepared = this.connection.prepareStatement(query);
             prepared.setInt(1,id);

@@ -15,5 +15,22 @@ public class Helper {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static boolean confirm(String string) {
+        optionPaneTR();
+        String message;
+        if (string.equals("sure")) {
+            message = "Are you sure you want to do this ?";
+        } else {
+            message = string;
+        }
+        return JOptionPane.showConfirmDialog(null,message,"Please confirm !", JOptionPane.YES_NO_OPTION) == 0;
+    }
+
+
+    public static void optionPaneTR() {
+        UIManager.put("OptionPane.okButtonText" , "OK");
+        UIManager.put("OptionPane.yesButtonText" , "Yes");
+        UIManager.put("OptionPane.noButtonText" , "No");
+    }
 
 }
