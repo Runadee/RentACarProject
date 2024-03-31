@@ -22,12 +22,12 @@ public class BrandDao {
         ArrayList<Brand> brandList = new ArrayList<>();
         String sql = "SELECT * FROM public.brand ORDER BY brand_id ASC";
 
-        try{
+        try {
             ResultSet resultSet = this.connection.createStatement().executeQuery(sql);
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 brandList.add(this.match(resultSet));
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return brandList;
@@ -38,9 +38,9 @@ public class BrandDao {
         try {
 
             PreparedStatement prepared = this.connection.prepareStatement(query);
-            prepared.setString(1,brand.getName());
+            prepared.setString(1, brand.getName());
             return prepared.executeUpdate() != -1;
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return true;
@@ -51,10 +51,10 @@ public class BrandDao {
 
         try {
             PreparedStatement prepared = this.connection.prepareStatement(query);
-            prepared.setString(1,brand.getName());
-            prepared.setInt(2,brand.getId());
+            prepared.setString(1, brand.getName());
+            prepared.setInt(2, brand.getId());
             return prepared.executeUpdate() != -1;
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return true;
@@ -64,7 +64,7 @@ public class BrandDao {
         String query = "DELETE FROM public.brand WHERE brand_id = ?";
         try {
             PreparedStatement prepared = this.connection.prepareStatement(query);
-            prepared.setInt(1,id);
+            prepared.setInt(1, id);
             return prepared.executeUpdate() != -1;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -77,7 +77,7 @@ public class BrandDao {
         String query = "SELECT * FROM public.brand WHERE brand_id = ? ";
         try {
             PreparedStatement prepared = this.connection.prepareStatement(query);
-            prepared.setInt(1,id);
+            prepared.setInt(1, id);
             ResultSet resultSet = prepared.executeQuery();
 
             if (resultSet.next()) {

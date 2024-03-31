@@ -24,7 +24,7 @@ public class ModelDao {
 
         try {
             PreparedStatement prepared = this.connection.prepareStatement(query);
-            prepared.setInt(1,id);
+            prepared.setInt(1, id);
             ResultSet resultSet = prepared.executeQuery();
             if (resultSet.next()) {
                 object = this.match(resultSet);
@@ -36,10 +36,14 @@ public class ModelDao {
     }
 
     public ArrayList<Model> findAll() {
+        return this.selectByQuery("SELECT * FROM public.model ORDER BY model_id ASC");
+    }
+
+    public ArrayList<Model> selectByQuery(String query) {
         ArrayList<Model> modelList = new ArrayList<>();
         try {
-            ResultSet resultSet = this.connection.createStatement().executeQuery("SELECT * FROM public.model ORDER BY model_id ASC ");
-            while(resultSet.next()) {
+            ResultSet resultSet = this.connection.createStatement().executeQuery(query);
+            while (resultSet.next()) {
                 modelList.add(this.match(resultSet));
             }
         } catch (SQLException throwables) {
@@ -48,7 +52,7 @@ public class ModelDao {
         return modelList;
     }
 
-    public boolean save(Model model ) {
+    public boolean save(Model model) {
         String query = "INSERT INTO public.model " +
                 "(" +
                 "model_brand_id" +
@@ -61,18 +65,39 @@ public class ModelDao {
                 "VALUES (?,?,?,?,?,?)";
         try {
             PreparedStatement prepared = this.connection.prepareStatement(query);
-            prepared.setInt(1,model.getBrand_id());
-        }catch (SQLException throwables) {
+            prepared.setInt(1, model.getBrand_id());
+            prepared.setString(2, model.getName());
+            prepared.setString(3, model.getType().toString());
+            prepared.setString(4, model.getYear());
+            prepared.setString(5, model.getFuel().toString());
+            prepared.setString(6, model.getGear().toString());
+
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
 
         }
+        return true;
+    }
+
+    public boolean update(Model model) {
+        String query = "UPDATE public.model SET model_name = ? WHERE model_id = ?";
+
+        try {
+            PreparedStatement prepared = this.connection.prepareStatement(query);
+            prepared.setString(1, model.getName());
+            prepared.setInt(2, model.getId());
+            return prepared.executeUpdate() != -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     public boolean delete(int model_id) {
         String query = "DELETE FROM public.model WHERE model_id = ?";
         try {
             PreparedStatement prepared = this.connection.prepareStatement(query);
-            prepared.setInt(1,model_id);
+            prepared.setInt(1, model_id);
             return prepared.executeUpdate() != -1;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -80,18 +105,7 @@ public class ModelDao {
         return true;
     }
 
-    public ArrayList<Model> selectByQuery(String query) {
-        ArrayList<Model> modelList = new ArrayList<>();
-        try{
-            ResultSet resultSet = this.connection.createStatement().executeQuery(query);
-            while (resultSet.next()) {
-                modelList.add(this.match(resultSet));
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return modelList;
-    }
+
 
 
     public Model match(ResultSet resultSet) throws SQLException {

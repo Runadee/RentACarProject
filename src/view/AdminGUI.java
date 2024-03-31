@@ -1,8 +1,8 @@
 package view;
 
 import business.BrandManager;
+import business.ModelManager;
 import core.Helper;
-import entity.Brand;
 import entity.User;
 
 import javax.swing.*;
@@ -16,19 +16,25 @@ import java.util.ArrayList;
 public class AdminGUI extends Layout {
     private JPanel container;
     private JLabel label_welcome;
-    private JTabbedPane tabbedPane1;
+    private JTabbedPane panel_model;
     private JButton button_logout;
     private JPanel panel_brand;
     private JScrollPane scroll_brand;
     private JTable table_brand;
+    private JScrollPane scroll_model;
+    private JTable table_model;
     private User user;
     private DefaultTableModel tableModel_brand;
+    private DefaultTableModel tableModel_model;
     private BrandManager brandManager;
+    private ModelManager modelManager;
     private JPopupMenu brandMenu;
 
     public AdminGUI(User user) {
         this.tableModel_brand = new DefaultTableModel();
+        this.tableModel_model = new DefaultTableModel();
         this.brandManager = new BrandManager();
+        this.modelManager = new ModelManager();
         this.add(container);
         this.user = user;
         this.guiInitialize(1000, 500);
@@ -39,6 +45,8 @@ public class AdminGUI extends Layout {
         this.label_welcome.setText(" Welcome " + this.user.getUsername());
         loadBrandTable();
         loadBrandComponent();
+
+        loadModelTable();
         this.table_brand.setComponentPopupMenu(this.brandMenu);
     }
 
@@ -89,6 +97,12 @@ public class AdminGUI extends Layout {
                 }
             }
         });
+    }
+
+    public void loadModelTable() {
+        Object[] column_model = {"Model ID", "Brand" , "Name", "Type", "Year", "Fuel", "Gear"};
+        ArrayList<Object[]> modelList = this.modelManager.getForTable(column_model.length,this.modelManager.findAll());
+        createTable(this.tableModel_model, this.table_model,column_model,modelList);
     }
 
 }
