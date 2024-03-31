@@ -1,7 +1,9 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Layout extends JFrame {
 
@@ -14,6 +16,11 @@ public class Layout extends JFrame {
         int y = (Toolkit.getDefaultToolkit().getScreenSize().height - this.getSize().height) / 2;
         this.setLocation(x, y);
         this.setVisible(true);
+    }
+
+    public void createTable(DefaultTableModel model, JTable table, Object[] columns, ArrayList<Object> rows) {
+
+
     }
 
 }

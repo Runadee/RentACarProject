@@ -26,18 +26,27 @@ public class BrandGUI extends Layout {
         this.guiInitialize(300,300);
 
 
+        if (brand != null) {
+
+            field_brand_name.setText(brand.getName());
+        }
         button_brand_save.addActionListener(e -> {
             if (Helper.isFieldEmpty(this.field_brand_name)) {
                 Helper.showMessage("Fill in all field !");
             } else {
-                boolean result = false;
+                boolean result;
 
                 if (this.brand == null) {
                     result = this.brandManager.save(new Brand(field_brand_name.getText()));
-                    if (result) {
-                        Helper.showMessage("Transaction successful");
-                        dispose();
-                    }
+
+                } else {
+                    this.brand.setName(field_brand_name.getText());
+                    result = this.brandManager.update(this.brand);
+                }
+
+                if (result) {
+                    Helper.showMessage("Transaction successful");
+                    dispose();
                 } else {
                     Helper.showMessage("Error");
                 }

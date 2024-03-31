@@ -20,7 +20,7 @@ public class BrandDao {
 
     public ArrayList<Brand> findAll() {
         ArrayList<Brand> brandList = new ArrayList<>();
-        String sql = "SELECT * FROM public.brand";
+        String sql = "SELECT * FROM public.brand ORDER BY brand_id ASC";
 
         try{
             ResultSet resultSet = this.connection.createStatement().executeQuery(sql);
@@ -46,6 +46,38 @@ public class BrandDao {
         return true;
     }
 
+    public boolean update(Brand brand) {
+        String query = "UPDATE public.brand SET brand_name = ? WHERE brand_id = ?";
+
+        try {
+
+            PreparedStatement prepared = this.connection.prepareStatement(query);
+            prepared.setString(1,brand.getName());
+            prepared.setInt(2,brand.getId());
+            return prepared.executeUpdate() != -1;
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public Brand getById(int id) {
+        Brand object = null;
+        String query = "SELECT * FROM public.brand WHERE brand_id";
+        try {
+            PreparedStatement prepared = this.connection.prepareStatement(query);
+            prepared.setInt(1,id);
+            ResultSet resultSet = prepared.executeQuery();
+
+            if (resultSet.next()) {
+                object = this.match(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return object;
+    }
 
     public Brand match(ResultSet resultSet) throws SQLException {
         Brand object = new Brand();

@@ -23,4 +23,15 @@ public class BrandManager {
         }
         return this.brandDao.save(brand);
     }
+
+    public Brand getById(int id) {
+        return this.brandDao.getById(id);
+    }
+
+    public boolean update(Brand brand) {
+        if (this.getById(brand.getId()) == null) {
+            Helper.showMessage("Not Found !");
+        }
+        return this.brandDao.update(brand);
+    }
 }
