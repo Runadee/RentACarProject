@@ -7,8 +7,6 @@ import entity.User;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -28,7 +26,8 @@ public class AdminGUI extends Layout {
     private DefaultTableModel tableModel_model;
     private BrandManager brandManager;
     private ModelManager modelManager;
-    private JPopupMenu brandMenu;
+    private JPopupMenu brand_menu;
+    private JPopupMenu model_menu;
 
     public AdminGUI(User user) {
         this.tableModel_brand = new DefaultTableModel();
@@ -45,9 +44,27 @@ public class AdminGUI extends Layout {
         this.label_welcome.setText(" Welcome " + this.user.getUsername());
         loadBrandTable();
         loadBrandComponent();
-
         loadModelTable();
-        this.table_brand.setComponentPopupMenu(this.brandMenu);
+        loadModelComponent();
+
+    }
+
+    private void loadModelComponent() {
+        tableRowSelect(this.table_model);
+
+        // Pop-Up Menu New, Update, Delete Actions
+        this.model_menu = new JPopupMenu();
+        this.model_menu.add("New").addActionListener(e -> {
+
+        });
+
+        this.model_menu.add("Update").addActionListener(e -> {
+
+        });
+        this.model_menu.add("Delete").addActionListener(e -> {
+
+        });
+        this.table_model.setComponentPopupMenu(this.model_menu);
     }
 
     public void loadBrandTable() {
@@ -57,16 +74,10 @@ public class AdminGUI extends Layout {
     }
 
     public void loadBrandComponent() {
-        this.table_brand.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                int selected_row = table_brand.rowAtPoint(e.getPoint());
-                table_brand.setRowSelectionInterval(selected_row, selected_row);
-            }
-        });
+        tableRowSelect(this.table_brand);
         // Pop-Up Menu New, Update, Delete Actions
-        this.brandMenu = new JPopupMenu();
-        this.brandMenu.add("New").addActionListener(e -> {
+        this.brand_menu = new JPopupMenu();
+        this.brand_menu.add("New").addActionListener(e -> {
             BrandGUI brandGUI = new BrandGUI(null);
             brandGUI.addWindowListener(new WindowAdapter() {
                 @Override
@@ -76,8 +87,8 @@ public class AdminGUI extends Layout {
             });
         });
 
-        this.brandMenu.add("Update").addActionListener(e -> {
-            int selectBrandId = this.getTableSelectedRow(table_brand,0);
+        this.brand_menu.add("Update").addActionListener(e -> {
+            int selectBrandId = this.getTableSelectedRow(table_brand, 0);
             BrandGUI brandGUI = new BrandGUI(this.brandManager.getById(selectBrandId));
             brandGUI.addWindowListener(new WindowAdapter() {
                 @Override
@@ -86,9 +97,9 @@ public class AdminGUI extends Layout {
                 }
             });
         });
-        this.brandMenu.add("Delete").addActionListener(e -> {
+        this.brand_menu.add("Delete").addActionListener(e -> {
             if (Helper.confirm("sure")) {
-                int selectBrandId = this.getTableSelectedRow(table_brand,0);
+                int selectBrandId = this.getTableSelectedRow(table_brand, 0);
                 if (this.brandManager.delete(selectBrandId)) {
                     Helper.showMessage("Succeed !");
                     loadBrandTable();
@@ -97,12 +108,13 @@ public class AdminGUI extends Layout {
                 }
             }
         });
+        this.table_brand.setComponentPopupMenu(this.brand_menu);
     }
 
     public void loadModelTable() {
-        Object[] column_model = {"Model ID", "Brand" , "Name", "Type", "Year", "Fuel", "Gear"};
-        ArrayList<Object[]> modelList = this.modelManager.getForTable(column_model.length,this.modelManager.findAll());
-        createTable(this.tableModel_model, this.table_model,column_model,modelList);
+        Object[] column_model = {"Model ID", "Brand", "Name", "Type", "Year", "Fuel", "Gear"};
+        ArrayList<Object[]> modelList = this.modelManager.getForTable(column_model.length, this.modelManager.findAll());
+        createTable(this.tableModel_model, this.table_model, column_model, modelList);
     }
 
 }
