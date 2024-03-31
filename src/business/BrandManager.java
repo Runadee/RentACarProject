@@ -4,6 +4,7 @@ import core.Helper;
 import dao.BrandDao;
 import entity.Brand;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class BrandManager {
@@ -11,6 +12,18 @@ public class BrandManager {
 
     public BrandManager() {
         this.brandDao = new BrandDao();
+    }
+
+    public ArrayList<Object[]> getForTable(int size) {
+        ArrayList<Object[]> brandRowList = new ArrayList<>();
+        for (Brand brand : this.findAll()) {
+            Object[] rowObject = new Object[size];
+            int i = 0;
+            rowObject[i++] = brand.getId();
+            rowObject[i++] = brand.getName();
+            brandRowList.add(rowObject);
+        }
+        return brandRowList;
     }
 
     public ArrayList<Brand> findAll() {
