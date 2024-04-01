@@ -54,14 +54,7 @@ public class ModelDao {
 
     public boolean save(Model model) {
         String query = "INSERT INTO public.model " +
-                "(" +
-                "model_brand_id" +
-                "model_name" +
-                "model_type" +
-                "model_year" +
-                "model_fuel" +
-                "model_gear" +
-                ")" +
+                "(model_brand_id, model_name, model_type, model_year, model_fuel, model_gear) " +
                 "VALUES (?,?,?,?,?,?)";
         try {
             PreparedStatement prepared = this.connection.prepareStatement(query);
@@ -71,22 +64,34 @@ public class ModelDao {
             prepared.setString(4, model.getYear());
             prepared.setString(5, model.getFuel().toString());
             prepared.setString(6, model.getGear().toString());
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-
+            return prepared.executeUpdate() != -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
-    public boolean update(Model model) {
-        String query = "UPDATE public.model SET model_name = ? WHERE model_id = ?";
 
+    public boolean update(Model model) {
+        String query = "UPDATE public.model SET " +
+                "model_brand_id = ? , " +
+                "model_name = ? , " +
+                "model_type = ? , " +
+                "model_year = ? , " +
+                "model_fuel = ? , " +
+                "model_gear = ? " +
+                "WHERE model_id = ?";
         try {
-            PreparedStatement prepared = this.connection.prepareStatement(query);
-            prepared.setString(1, model.getName());
-            prepared.setInt(2, model.getId());
-            return prepared.executeUpdate() != -1;
+            PreparedStatement ps = this.connection.prepareStatement(query);
+            ps.setInt(1, model.getBrand_id());
+            ps.setString(2, model.getName());
+            ps.setString(3, model.getType().toString());
+            ps.setString(4, model.getYear());
+            ps.setString(5, model.getFuel().toString());
+            ps.setString(6, model.getGear().toString());
+            ps.setInt(7, model.getId());
+            return ps.executeUpdate() != -1;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

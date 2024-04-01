@@ -3,6 +3,7 @@ package view;
 import business.BrandManager;
 import business.ModelManager;
 import core.Helper;
+import entity.Model;
 import entity.User;
 
 import javax.swing.*;
@@ -55,14 +56,38 @@ public class AdminGUI extends Layout {
         // Pop-Up Menu New, Update, Delete Actions
         this.model_menu = new JPopupMenu();
         this.model_menu.add("New").addActionListener(e -> {
+            ModelGUI modelGUI = new ModelGUI(new Model());
+            modelGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    loadModelTable();
+                }
+            });
 
         });
 
         this.model_menu.add("Update").addActionListener(e -> {
 
+            int selectModelId = this.getTableSelectedRow(table_model, 0);
+            ModelGUI modelGUI = new ModelGUI(this.modelManager.getById(selectModelId));
+            modelGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    loadModelTable();
+                }
+            });
         });
         this.model_menu.add("Delete").addActionListener(e -> {
 
+            if (Helper.confirm("sure")) {
+                int selectModelId = this.getTableSelectedRow(table_model, 0);
+                if (this.modelManager.delete(selectModelId)) {
+                    Helper.showMessage("Succeed !");
+                    loadModelTable();
+                } else {
+                    Helper.showMessage("Error !");
+                }
+            }
         });
         this.table_model.setComponentPopupMenu(this.model_menu);
     }
@@ -83,6 +108,7 @@ public class AdminGUI extends Layout {
                 @Override
                 public void windowClosed(WindowEvent e) {
                     loadBrandTable();
+                    loadModelTable();
                 }
             });
         });
@@ -94,6 +120,7 @@ public class AdminGUI extends Layout {
                 @Override
                 public void windowClosed(WindowEvent e) {
                     loadBrandTable();
+                    loadModelTable();
                 }
             });
         });
@@ -103,6 +130,7 @@ public class AdminGUI extends Layout {
                 if (this.brandManager.delete(selectBrandId)) {
                     Helper.showMessage("Succeed !");
                     loadBrandTable();
+                    loadModelTable();
                 } else {
                     Helper.showMessage("Error !");
                 }

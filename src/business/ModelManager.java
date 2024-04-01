@@ -2,6 +2,7 @@ package business;
 
 import core.Helper;
 import dao.ModelDao;
+import entity.Brand;
 import entity.Model;
 
 import java.util.ArrayList;
@@ -37,9 +38,10 @@ public class ModelManager {
 
     public boolean save(Model model) {
         if (this.getById(model.getId()) != null) {
-            Helper.showMessage("This brand is available");
+            Helper.showMessage("Error: Model with ID " + model.getId() + " already exists.");
+            return false;
         }
-        return false;
+        return this.modelDao.save(model);
     }
 
     public boolean update(Model model) {

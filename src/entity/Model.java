@@ -1,4 +1,5 @@
 package entity;
+import core.ComboItem;
 
 public class Model {
     private int id;
@@ -28,9 +29,6 @@ public class Model {
         HATCHBACK
     }
 
-    public Model() {
-
-    }
 
     public int getId() {
         return id;
@@ -103,4 +101,9 @@ public class Model {
     public void setYear(String year) {
         this.year = year;
     }
+
+    public ComboItem getComboItem(){
+        return new ComboItem(this.getId(),this.getBrand().getName() + " - " + this.getName() + " - " + this.getYear() + " - " + this.getGear());
+    }
 }
+

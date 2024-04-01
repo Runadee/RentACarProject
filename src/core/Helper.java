@@ -11,7 +11,7 @@ public class Helper {
     public static void showMessage(String message) {
         JOptionPane.showMessageDialog(null,
                 message,
-                "Error",
+                "Info",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -33,4 +33,12 @@ public class Helper {
         UIManager.put("OptionPane.noButtonText" , "No");
     }
 
+    public static boolean isFieldListEmpty(JTextField[] jTextFields) {
+        for (JTextField field : jTextFields) {
+            if (isFieldEmpty(field)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
