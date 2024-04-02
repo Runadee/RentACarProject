@@ -39,15 +39,19 @@ public class ModelDao {
         return this.selectByQuery("SELECT * FROM public.model ORDER BY model_id ASC");
     }
 
+    public ArrayList<Model> getByListBrandId(int brandId) {
+        return this.selectByQuery("SELECT * FROM public.model WHERE model_brand_id = " + brandId);
+    }
+
     public ArrayList<Model> selectByQuery(String query) {
         ArrayList<Model> modelList = new ArrayList<>();
         try {
-            ResultSet resultSet = this.connection.createStatement().executeQuery(query);
-            while (resultSet.next()) {
-                modelList.add(this.match(resultSet));
+            ResultSet rs = this.connection.createStatement().executeQuery(query);
+            while (rs.next()) {
+                modelList.add(this.match(rs));
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return modelList;
     }
@@ -109,8 +113,6 @@ public class ModelDao {
         }
         return true;
     }
-
-
 
 
     public Model match(ResultSet resultSet) throws SQLException {
